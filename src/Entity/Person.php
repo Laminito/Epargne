@@ -2,8 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\PersonRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use App\Repository\PersonRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
 class Person
@@ -11,25 +16,29 @@ class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    protected ?int $id = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    private ?string $prenom = null;
+    // #[Groups(['spa:read:simple','spa:write'])]
+    protected ?string $prenom = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    private ?string $nom = null;
+    protected ?string $nom = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    private ?string $telephone = null;
+    protected ?string $telephone = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    private ?string $adresse = null;
+    protected ?string $adresse = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $cni = null;
+    protected ?int $cni = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $sexe = null;
+
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    protected $avatar = null;
 
     public function getId(): ?int
     {
@@ -104,6 +113,18 @@ class Person
     public function setSexe(?string $sexe): self
     {
         $this->sexe = $sexe;
+
+        return $this;
+    }
+
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar): self
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }

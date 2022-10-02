@@ -2,34 +2,48 @@
 
 namespace App\Entity;
 
-use App\Repository\GestionnairesRepository;
+use App\Entity\Person;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\InheritanceType;
+use App\Repository\GestionnairesRepository;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: GestionnairesRepository::class)]
+#[ORM\InheritanceType("JOINED")]
+#[ORM\DiscriminatorColumn(name:"type", type:"string")]
+#[ORM\DiscriminatorMap([
+    "super_admin" => "SuperAdmin",
+    "admin_group" => "AdminGroup",
+])]
 class Gestionnaires implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
-
+    // #[Groups(['spa:read:simple'])]
+    protected ?int $id = null;
+    
+    // #[Groups(['spa:read:simple'])]
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    protected ?string $email = null;
 
     #[ORM\Column]
-    private array $roles = [];
+    protected array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
-    private ?string $password = null;
+    protected ?string $password = null;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $avatar = null;
+   
 
     public function getId(): ?int
     {
@@ -65,7 +79,7 @@ class Gestionnaires implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_VISITEUR';
 
         return array_unique($roles);
     }
@@ -101,15 +115,4 @@ class Gestionnaires implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getAvatar()
-    {
-        return $this->avatar;
-    }
-
-    public function setAvatar($avatar): self
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
 }
