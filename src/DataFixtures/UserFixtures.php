@@ -2,7 +2,11 @@
 
 namespace App\DataFixtures;
 
+
+use App\Entity\Member;
+use App\Entity\AdminGroup;
 use App\Entity\SuperAdmin;
+use App\Entity\Gestionnaires;
 use App\DataFixtures\UserFixtures;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -24,17 +28,26 @@ class UserFixtures extends Fixture
         $hashedPassword = $this->hashedPassword->hashPassword($sa,'passer');
         $sa->setPassword($hashedPassword);
         $sa->setRoles(['SUPER_ADMIN']);
-        // $sa->setPrenom('Mohamed Ba');
-        
 
-        // $user1= new Gestionnaires();
-        // $user1->setEmail('gestionnaire@example.com');
-        // $hashedPassword = $this->hashedPassword->hashPassword($user1,'passer');
-        // $user1->setPassword($hashedPassword);
-        // $user1->setRoles(['ROLE_GESTIONNAIRE']);
+
+        $ag= new AdminGroup();
+        $ag->setEmail('admingroup@epargne.com');
+        $hashedPassword = $this->hashedPassword->hashPassword($ag,'passer');
+        $ag->setPassword($hashedPassword);
+        $ag->setRoles(['ADMIN']);
+
+        $mb= new Member();
+        $mb->setPrenom("Awa");
+        $mb->setNom("Diop");
+        $mb->setAdresse("Pikine");
+        $mb->setTelephone("783703310");
+        $mb->setCni(194520);
+        $mb->setAvatar("https:www.pngall.com/wp-content/uploads/5/Profile-PNG-Clipart.png");
+        $mb->setSexe("Femininin");
 
         $manager->persist($sa);
-        $manager->persist($sa);
+        $manager->persist($ag);
+        $manager->persist($mb);
         $manager->flush();
 
     }

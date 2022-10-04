@@ -7,37 +7,55 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use App\Repository\PersonRepository;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
+#[ORM\InheritanceType("JOINED")]
+#[ORM\DiscriminatorColumn(name:"type", type:"string")]
+#[ORM\DiscriminatorMap([
+    "super_admin" => "SuperAdmin",
+    "admin_group" => "AdminGroup",
+    "membre"=>"Member",
+])]
 class Person
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['adg:read:simple'])]
     protected ?int $id = null;
 
+    // #[Groups(['spa:read:simple'])]
     #[ORM\Column(length: 100, nullable: true)]
-    // #[Groups(['spa:read:simple','spa:write'])]
+    #[Groups(['adg:read:simple','adg:write','spa:read:simple','spa:write','adg:read:simple'])]
     protected ?string $prenom = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['adg:read:simple','adg:write','spa:read:simple','spa:write','adg:read:simple'])]
     protected ?string $nom = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['adg:read:simple','adg:write','spa:read:simple','spa:write','adg:read:simple'])]
     protected ?string $telephone = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['adg:read:simple','adg:write','spa:read:simple','spa:write','adg:read:simple'])]
     protected ?string $adresse = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['adg:read:simple','adg:write','spa:read:simple','spa:write','adg:read:simple'])]
     protected ?int $cni = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    private ?string $sexe = null;
+    #[Groups(['adg:read:simple','adg:write','spa:read:simple','spa:write','adg:read:simple'])]
+    protected ?string $sexe = null;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
+    #[Groups(['adg:read:simple','adg:write','spa:read:simple','spa:write','adg:read:simple'])]
     protected $avatar = null;
 
     public function getId(): ?int

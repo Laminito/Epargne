@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\DiscriminatorColumn(name:"type", type:"string")]
 #[ORM\DiscriminatorMap([
     "super_admin" => "SuperAdmin",
-    "admin_group" => "AdminGroup",
+    "admin_group" => "AdminGroup"
 ])]
 class Gestionnaires implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -27,23 +27,24 @@ class Gestionnaires implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    // #[Groups(['spa:read:simple'])]
+    #[Groups(['spa:read:simple','adg:read:simple'])]
     protected ?int $id = null;
-    
-    // #[Groups(['spa:read:simple'])]
+
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['spa:read:simple','spa:write','adg:read:simple','adg:write'])]
     protected ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['spa:read:simple','spa:write','adg:read:simple','adg:write'])]
     protected array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['spa:read:simple','spa:write','adg:read:simple','adg:write'])]
     protected ?string $password = null;
 
-   
 
     public function getId(): ?int
     {
